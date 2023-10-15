@@ -1,0 +1,57 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
+
+# Assuming your data is in a DataFrame named 'df'
+# You may need to convert text data into numerical form and handle date ranges appropriately.
+
+# Your data (assuming it's in a dictionary format)
+data = {
+    'Location': ['BigDipper', 'Colosseum', 'Comfort Hotel Grand. Gjovik', 'CoziestVinylShop', 'CoziestVinylShop', 'Frognerparken', 'Frydenberg skole', 'Google', 'Holmen', 'Kendall Square Post Office', 'Lillehammer stasjon', 'Piperpal@Google', 'Sinsen kirke', 'Sinsen menighet', 'Stamboul', 'Tutorial'],
+    'API': ['http://api.piperpal.com/location']*16,
+    'URL': ['https://jitsi.aamot.software/Music/BigDipper', 'https://jitsi.aamot.software/Electronics/Colosseum', 'https://www.nordicchoicehotels.no/hotell/norge/gjovik/clarion-collection-hotel-grand-gjovik/', 'https://jitsi.aamot.software/Music/CoziestVinylShop', 'https://jitsi.aamot.software/Music/CoziestVinylShop', 'https://jitsi.aamot.software/Film/Frognerparken', 'https://www.piperpal.com/Education/Frydenberg skole', 'https://www.piperpal.com/google.html', 'https://www.piperpal.com/Books/Holmen', 'https://www.piperpal.com', 'https://www.banenor.no/reisende/stasjonsoversikt/Stasjonssok/-L-/Lillehammer/', 'https://www.piperpal.com/google.html', 'https://www.kirken.no/sinsen', 'https://www.kirken.no/sinsen', 'https://jitsi.aamot.software/Books/Vogts Gate', 'https://www.piperpal.com/tutorial/'],
+    'Category': ['Books']*16,
+    'Latitude': [59.93413336, 59.92982400, 60.79660000, 37.78583400, 59.93408361, 59.92645830, 59.92929050, 59.92939249, 59.92921510, 37.42242580, 61.11493380, 37.41955900, 59.92926792, 37.42242580, 59.93421910, 59.92930640],
+    'Longitude': [10.74828798, 10.71247450, 10.69047000, -122.40641700, 10.74818990, 10.70128470, 10.79010460, 10.79010415, 10.79002920, -122.08755550, 10.46146370, -122.08977670, 10.79047952, -122.08755550, 10.76435610, 10.79017950],
+    'Start_Date': ['2022-09-30 18:53:15']*16,
+    'End_Date': ['2036-10-01 00:00:00']*16
+}
+
+# Assuming your data is in a DataFrame named 'df'
+# You may need to convert text data into numerical form and handle date ranges appropriately.
+
+# Creating DataFrame
+df = pd.DataFrame(data)
+
+# Displaying the original DataFrame
+print("Original DataFrame:")
+print(df)
+
+# Select relevant features (latitude and longitude)
+features = df[['Latitude', 'Longitude']]
+
+# Convert categorical variables (city names) to numerical labels if needed
+# For simplicity, let's assume you have a 'City' column as your target variable
+target = df['Location']  # Replace 'City' with the actual column name
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=0.2, random_state=42)
+
+# Create a k-nearest neighbors classifier
+model = make_pipeline(StandardScaler(), KNeighborsClassifier(n_neighbors=3))  # You may adjust the number of neighbors
+
+# Train the model
+model.fit(X_train, y_train)
+
+# Make predictions
+predictions = model.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, predictions)
+print("Accuracy:", {accuracy})
+
+print("Predictions:")
+print(predictions)
